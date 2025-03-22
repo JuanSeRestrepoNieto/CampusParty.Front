@@ -1,0 +1,153 @@
+.dashboard-container {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  color: #2d3436;
+  margin: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-info span {
+  color: #2d3436;
+  font-weight: 500;
+}
+
+.logout-button {
+  background: #d63031;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logout-button:hover {
+  background: #ff4757;
+}
+
+.dashboard-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.nav-button {
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  background: #74b9ff;
+  transform: translateY(-2px);
+}
+
+.nav-button.active {
+  background: #0984e3;
+}
+
+.dashboard-main {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-content {
+  padding: 20px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+  background-color: #6c5ce7;
+  color: white;
+}
+
+.data-table tr:hover {
+  background-color: #f5f6fa;
+}
+
+.add-button {
+  background: #0984e3;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background 0.3s ease;
+}
+
+.add-button:hover {
+  background: #00b894;
+}
+
+.edit-button,
+.delete-button {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.edit-button {
+  background: #0984e3;
+  color: white;
+}
+
+.delete-button {
+  background: #d63031;
+  color: white;
+}
+
+.edit-button:hover {
+  background: #00b894;
+}
+
+.delete-button:hover {
+  background: #ff4757;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #6c5ce7;
+  font-size: 1.2em;
+}
