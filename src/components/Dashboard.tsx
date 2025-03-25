@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { dashboardService } from '../services/dashboard.service';
-import './Dashboard.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { dashboardService } from "../services/dashboard.service";
+import "./Dashboard.css";
+import Pabellon from "./Pabellon";
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'users' | 'events' | 'participants'>('users');
+  const [activeTab, setActiveTab] = useState<
+    "users" | "events" | "participants" | "pabellon"
+  >("users");
   const [users, setUsers] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [participants, setParticipants] = useState<any[]>([]);
@@ -19,13 +22,13 @@ const Dashboard: React.FC = () => {
         const [usersData, eventsData, participantsData] = await Promise.all([
           dashboardService.getUsers(),
           dashboardService.getEvents(),
-          dashboardService.getParticipants()
+          dashboardService.getParticipants(),
         ]);
         setUsers(usersData);
         setEvents(eventsData);
         setParticipants(participantsData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -36,12 +39,12 @@ const Dashboard: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'users':
+      case "users":
         return (
           <div className="dashboard-content">
             <h2>Usuarios</h2>
@@ -73,7 +76,7 @@ const Dashboard: React.FC = () => {
             </table>
           </div>
         );
-      case 'events':
+      case "events":
         return (
           <div className="dashboard-content">
             <h2>Eventos</h2>
@@ -107,7 +110,7 @@ const Dashboard: React.FC = () => {
             </table>
           </div>
         );
-      case 'participants':
+      case "participants":
         return (
           <div className="dashboard-content">
             <h2>Participantes</h2>
@@ -139,6 +142,8 @@ const Dashboard: React.FC = () => {
             </table>
           </div>
         );
+      case "pabellon":
+        return <Pabellon />;
       default:
         return null;
     }
@@ -149,29 +154,39 @@ const Dashboard: React.FC = () => {
       <header className="dashboard-header">
         <h1>Dashboard de Campus Party</h1>
         <div className="user-info">
-          <span>Bienvenido, {localStorage.getItem('user') || 'Usuario'}</span>
-          <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
+          <span>Bienvenido, {localStorage.getItem("user") || "Usuario"}</span>
+          <button onClick={handleLogout} className="logout-button">
+            Cerrar Sesión
+          </button>
         </div>
       </header>
 
       <nav className="dashboard-nav">
         <button
-          className={`nav-button ${activeTab === 'users' ? 'active' : ''}`}
-          onClick={() => setActiveTab('users')}
+          className={`nav-button ${activeTab === "users" ? "active" : ""}`}
+          onClick={() => setActiveTab("users")}
         >
           Usuarios
         </button>
         <button
-          className={`nav-button ${activeTab === 'events' ? 'active' : ''}`}
-          onClick={() => setActiveTab('events')}
+          className={`nav-button ${activeTab === "events" ? "active" : ""}`}
+          onClick={() => setActiveTab("events")}
         >
           Eventos
         </button>
         <button
-          className={`nav-button ${activeTab === 'participants' ? 'active' : ''}`}
-          onClick={() => setActiveTab('participants')}
+          className={`nav-button ${
+            activeTab === "participants" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("participants")}
         >
           Participantes
+        </button>
+        <button
+          className={`nav-button ${activeTab === "pabellon" ? "active" : ""}`}
+          onClick={() => setActiveTab("pabellon")}
+        >
+          Pabellon
         </button>
       </nav>
 
