@@ -10,6 +10,7 @@ const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'users' | 'events' | 'participants' | 'integracion'>('users');
   const [users, setUsers] = useState<any[]>([]);
   const token = useAuth().token;
+  const [addUserModal, setAddUserModal] = useState(false);
   const [events, setEvents] = useState<any[]>([]);
   const [participants, setParticipants] = useState<any[]>([]);
   const [integracion, setIntegracion] = useState<any[]>([]);
@@ -164,6 +165,7 @@ const Dashboard: React.FC = () => {
   };
 
   const renderAddUser = () => {
+    if (!addUserModal) return null;
     return (
       <div className="modal-overlay">
         <div className="modal-content">
@@ -211,7 +213,10 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="modal-buttons">
               <button type="submit" onClick={() => setSelectedUser(null)} className="submit-button">Guardar</button>
-              <button type="button" onClick={() => setSelectedUser(null)} className="cancel-button">Cancelar</button>
+              <button type="button" onClick={() => {
+                setSelectedUser(null)
+                setAddUserModal(false)
+                }} className="cancel-button">Cancelar</button>
             </div>
           </form>
         </div>
@@ -225,7 +230,7 @@ const Dashboard: React.FC = () => {
         return (
           <div className="dashboard-content">
             <h2>Usuarios</h2>
-            <button className="add-button">Nuevo Usuario</button>
+            <button onClick={() => setAddUserModal(true)} className="add-button">Nuevo Usuario</button>
             <table className="data-table">
               <thead>
                 <tr>
