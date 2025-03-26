@@ -22,6 +22,8 @@ export interface User {
   name: string;
   email: string;
   role: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface Event {
@@ -43,7 +45,7 @@ export interface DashboardService {
   // Usuarios
   getUsers: (token: string) => Promise<User[]>;
   getUser: (id: string) => Promise<User>;
-  createUser: (data: Partial<User>) => Promise<User>;
+  createUser: (data: Partial<User>, token: string) => Promise<User>;
   updateUser: (id: string, data: Partial<User>) => Promise<User>;
   deleteUser: (id: string) => Promise<void>;
 
@@ -78,8 +80,15 @@ export const dashboardService: DashboardService = {
     const response = await axios.get(`${API_URL}/auth/${id}`);
     return response.data;
   },
-  createUser: async (data) => {
-    const response = await axios.post(`${API_URL}/auth`, data);
+  createUser: async (data: Partial<User>, token: string) => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    const response = await axios.post(`${API_URL}/auth/create`, {
+      username: data.name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+      confirmPassword: data.password
+    });
     return response.data;
   },
   updateUser: async (id, data) => {

@@ -18,7 +18,9 @@ const Dashboard: React.FC = () => {
   const [editForm, setEditForm] = useState({
     id: '',
     username: '',
-    email: ''
+    email: '',
+    password: undefined,
+    role: undefined
   });
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -57,7 +59,9 @@ const Dashboard: React.FC = () => {
     setEditForm({
       id: user.id,
       username: user.username,
-      email: user.email
+      email: user.email,
+      password: undefined,
+      role: user.role
     });
   };
 
@@ -69,12 +73,19 @@ const Dashboard: React.FC = () => {
     }));
   };
 
+  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await dashboardService.updateUser(editForm.id, editForm);
+      await dashboardService.createUser({
+        name: editForm.username, 
+        email: editForm.email,
+        password: editForm.password,
+        role: editForm.role
+      }, token!);
       setSelectedUser(null);
-      setEditForm({ id: '', username: '', email: '' });
+      setEditForm({ id: '', username: '', email: '', password: undefined, role: undefined });
       await fetchData();
     } catch (error) {
       console.error('Error updating user:', error);
@@ -119,8 +130,87 @@ const Dashboard: React.FC = () => {
                 required
               />
             </div>
+            <div className="form-group">
+              <label>Role</label>
+              <input
+                type="text"
+                name="role"
+                value={editForm.role}
+                onChange={handleInputChange}
+                disabled
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="text"
+                name="password"
+                value={editForm.password}
+                onChange={handleInputChange}
+                disabled
+              />
+            </div> 
             <div className="modal-buttons">
               <button type="submit" className="submit-button">Guardar</button>
+              <button type="button" onClick={() => {
+                setSelectedUser(null)
+                
+                }} className="cancel-button">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAddUser = () => {
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <h3>Crear Usuario</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                type="text"
+                name="username"
+                value={editForm.username}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={editForm.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Role</label>
+              <input
+                type="text"
+                name="role"
+                value={editForm.role}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="text"
+                name="password"
+                value={editForm.password}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="modal-buttons">
+              <button type="submit" onClick={() => setSelectedUser(null)} className="submit-button">Guardar</button>
               <button type="button" onClick={() => setSelectedUser(null)} className="cancel-button">Cancelar</button>
             </div>
           </form>
@@ -164,6 +254,7 @@ const Dashboard: React.FC = () => {
               </tbody>
             </table>
             {renderEditModal()}
+            {renderAddUser()}
           </div>
         );
       case 'events':
