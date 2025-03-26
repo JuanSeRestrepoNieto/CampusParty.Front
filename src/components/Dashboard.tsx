@@ -10,33 +10,117 @@ const Dashboard: React.FC = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [participants, setParticipants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [editForm, setEditForm] = useState({
+    id: '',
+    username: '',
+    email: ''
+  });
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [usersData, eventsData, participantsData] = await Promise.all([
-          dashboardService.getUsers(),
-          dashboardService.getEvents(),
-          dashboardService.getParticipants()
-        ]);
-        setUsers(usersData);
-        setEvents(eventsData);
-        setParticipants(participantsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const [usersData] = await Promise.all([
+        dashboardService.getUsers(),
+        // dashboardService.getEvents(),
+        // dashboardService.getParticipants()
+      ]);
+      console.log(usersData);
+      setUsers(usersData);
+      // setEvents(eventsData);
+      // setParticipants(participantsData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleEditUser = (user: any) => {
+    setSelectedUser(user);
+    setEditForm({
+      id: user.id,
+      username: user.username,
+      email: user.email
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await dashboardService.updateUser(editForm.id, editForm);
+      setSelectedUser(null);
+      setEditForm({ id: '', username: '', email: '' });
+      await fetchData();
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  };
+
+  const renderEditModal = () => {
+    if (!selectedUser) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <h3>Editar Usuario</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>ID</label>
+              <input
+                type="text"
+                name="id"
+                value={editForm.id}
+                onChange={handleInputChange}
+                disabled
+              />
+            </div>
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                type="text"
+                name="username"
+                value={editForm.username}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={editForm.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="modal-buttons">
+              <button type="submit" className="submit-button">Guardar</button>
+              <button type="button" onClick={() => setSelectedUser(null)} className="cancel-button">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
   };
 
   const renderTabContent = () => {
@@ -50,9 +134,8 @@ const Dashboard: React.FC = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Nombre</th>
+                  <th>Username</th>
                   <th>Email</th>
-                  <th>Rol</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -62,15 +145,19 @@ const Dashboard: React.FC = () => {
                     <td>{user.id}</td>
                     <td>{user.name}</td>
                     <td>{user.email}</td>
-                    <td>{user.role}</td>
                     <td>
-                      <button className="edit-button">Editar</button>
-                      <button className="delete-button">Eliminar</button>
+                      <button 
+                        onClick={() => handleEditUser(user)}
+                        className="edit-button"
+                      >
+                        Editar
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            {renderEditModal()}
           </div>
         );
       case 'events':

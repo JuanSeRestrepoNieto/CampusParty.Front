@@ -3,6 +3,20 @@ import axios from 'axios';
 const API_URL = 'http://localhost:3001';
 
 // Interfaces para las diferentes tablas
+export interface AuthUser {
+  id: number;
+  username: string;
+  password_hash: string;
+  email: string;
+  role: string;
+  created_at: string;
+  last_login: string | null;
+  id_token: string | null;
+  token: string | null;
+  expires_at_token: string | null;
+  created_at_token: string | null;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -50,9 +64,15 @@ export interface DashboardService {
 
 export const dashboardService: DashboardService = {
   // Usuarios
-  getUsers: async () => {
+  async getUsers(): Promise<User[]> {
     const response = await axios.get(`${API_URL}/auth/all`);
-    return response.data;
+    console.log(response.data);
+    return response.data.map((user: AuthUser) => ({
+      id: user.id.toString(),
+      name: user.username,
+      email: user.email,
+      role: user.role
+    }));
   },
   getUser: async (id) => {
     const response = await axios.get(`${API_URL}/auth/${id}`);
@@ -63,7 +83,9 @@ export const dashboardService: DashboardService = {
     return response.data;
   },
   updateUser: async (id, data) => {
+    console.log(id, data);
     const response = await axios.put(`${API_URL}/auth/${id}`, data);
+    console.log(response.data);
     return response.data;
   },
   deleteUser: async (id) => {
