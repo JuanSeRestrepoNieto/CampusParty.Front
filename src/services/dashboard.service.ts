@@ -41,13 +41,29 @@ export interface Participant {
   status: string;
 }
 
+export interface Pabellon {
+  id: string;
+  name: string;
+  capacity: number;
+  location: string;
+  tematica: string;
+  area: string;
+}
+
 export interface DashboardService {
   // Usuarios
   getUsers: (token: string) => Promise<User[]>;
   getUser: (id: string) => Promise<User>;
   createUser: (data: Partial<User>, token: string) => Promise<User>;
   updateUser: (id: string, data: Partial<User>) => Promise<User>;
-  deleteUser: (id: string) => Promise<void>;
+  deleteUser: (id: string, token: string) => Promise<void>;
+
+  // Pabellones
+  getPabellones: (token: string) => Promise<Pabellon[]>;
+  getPabellon: (id: string) => Promise<Pabellon>;
+  createPabellon: (data: Partial<Pabellon>) => Promise<Pabellon>;
+  updatePabellon: (id: string, data: Partial<Pabellon>) => Promise<Pabellon>;
+  deletePabellon: (id: string) => Promise<void>;
 
   // Eventos
   getEvents: () => Promise<Event[]>;
@@ -95,8 +111,38 @@ export const dashboardService: DashboardService = {
     const response = await axios.patch(`${API_URL}/auth/${id}`, data);
     return response.data;
   },
-  deleteUser: async (id) => {
+  deleteUser: async (id, token: string) => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     await axios.delete(`${API_URL}/auth/${id}`);
+  },
+
+  // Pabellones
+  async getPabellones(token: string): Promise<Pabellon[]> {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    const response = await axios.get(`${API_URL}/pabellon`);
+    return response.data;
+  },
+  getPabellon: async (id) => {
+    const response = await axios.get(`${API_URL}/pabellon`);
+    return response.data;
+  },
+  createPabellon: async (data: Partial<Pabellon>) => {
+    const response = await axios.post(`${API_URL}/pabellon`, 
+      {
+        nombre:data.name, 
+        capacidad:data.capacity, 
+        ubicacion:data.location,
+        tematica:data.tematica,
+        area:data.area
+      });
+    return response.data;
+  },
+  updatePabellon: async (id, data) => {
+    const response = await axios.patch(`${API_URL}/pabellon/${id}`, data);
+    return response.data;
+  },
+  deletePabellon: async (id) => {
+    await axios.delete(`${API_URL}/pabellon/${id}`);
   },
 
   // Eventos
