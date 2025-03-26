@@ -16,13 +16,13 @@ const Dashboard: React.FC = () => {
     username: '',
     email: ''
   });
-  const { logout } = useAuth();
+  const { logout, token } = useAuth();
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const [usersData] = await Promise.all([
-        dashboardService.getUsers(),
+        dashboardService.getUsers(token!),
         // dashboardService.getEvents(),
         // dashboardService.getParticipants()
       ]);

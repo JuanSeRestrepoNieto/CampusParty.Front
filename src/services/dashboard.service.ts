@@ -41,7 +41,7 @@ export interface Participant {
 
 export interface DashboardService {
   // Usuarios
-  getUsers: () => Promise<User[]>;
+  getUsers: (token: string) => Promise<User[]>;
   getUser: (id: string) => Promise<User>;
   createUser: (data: Partial<User>) => Promise<User>;
   updateUser: (id: string, data: Partial<User>) => Promise<User>;
@@ -64,7 +64,8 @@ export interface DashboardService {
 
 export const dashboardService: DashboardService = {
   // Usuarios
-  async getUsers(): Promise<User[]> {
+  async getUsers(token: string): Promise<User[]> {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     const response = await axios.get(`${API_URL}/auth/all`);
     console.log(response.data);
     return response.data.map((user: AuthUser) => ({
