@@ -4,13 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import { dashboardService } from '../services/dashboard.service';
 import './Dashboard.css';
 import { storageService } from '../services/storage.service';
+import { integracionService } from '../services/integracion.service';
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'users' | 'events' | 'participants'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'events' | 'participants' | 'integracion'>('users');
   const [users, setUsers] = useState<any[]>([]);
   const token = useAuth().token;
   const [events, setEvents] = useState<any[]>([]);
   const [participants, setParticipants] = useState<any[]>([]);
+  const [integracion, setIntegracion] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [editForm, setEditForm] = useState({
@@ -23,15 +25,12 @@ const Dashboard: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const [usersData] = await Promise.all([
+      const [usersData, integracionData] = await Promise.all([
         dashboardService.getUsers(token!),
-        // dashboardService.getEvents(),
-        // dashboardService.getParticipants()
+        integracionService.getJSONPlaceHolder()
       ]);
-      console.log(usersData);
       setUsers(usersData);
-      // setEvents(eventsData);
-      // setParticipants(participantsData);
+      setIntegracion(integracionData);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -233,6 +232,30 @@ const Dashboard: React.FC = () => {
             </table>
           </div>
         );
+      case 'integracion':
+        return (
+          <div className="dashboard-content">
+            <h2>Integracion</h2>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Titulo</th>
+                  <th>Body</th>
+                </tr>
+              </thead>
+              <tbody>
+                {integracion.map((post) => (
+                  <tr key={post.id}>
+                    <td>{post.id}</td>
+                    <td>{post.title}</td>
+                    <td>{post.body}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
       default:
         return null;
     }
@@ -266,6 +289,12 @@ const Dashboard: React.FC = () => {
           onClick={() => setActiveTab('participants')}
         >
           Participantes
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'integracion' ? 'active' : ''}`}
+          onClick={() => setActiveTab('integracion')}
+        >
+          Integracion
         </button>
       </nav>
 
