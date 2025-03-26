@@ -18,7 +18,7 @@ export interface AuthResponse {
   id: string;
   name: string;
   email: string;
-  token: string;
+  access_token: string;
 }
 
 export const authService = {

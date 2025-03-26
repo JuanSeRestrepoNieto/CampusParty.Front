@@ -33,8 +33,8 @@ const Login: React.FC = () => {
         name: response.name,
         email: response.email,
         role: 'user' // Aquí iría el rol real desde la respuesta del servidor
-      }, response.token);
-
+      }, response.access_token);
+      
       // Redirigir al home
       navigate('/');
     } catch (err: any) {

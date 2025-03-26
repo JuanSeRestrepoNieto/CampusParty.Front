@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { dashboardService } from '../services/dashboard.service';
 import './Dashboard.css';
+import { storageService } from '../services/storage.service';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'users' | 'events' | 'participants'>('users');
   const [users, setUsers] = useState<any[]>([]);
+  const token = useAuth().token;
   const [events, setEvents] = useState<any[]>([]);
   const [participants, setParticipants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,7 +18,7 @@ const Dashboard: React.FC = () => {
     username: '',
     email: ''
   });
-  const { logout, token } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -38,6 +40,11 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    console.log(token);
     fetchData();
   }, []);
 

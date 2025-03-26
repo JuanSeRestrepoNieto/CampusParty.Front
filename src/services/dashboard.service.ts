@@ -67,7 +67,6 @@ export const dashboardService: DashboardService = {
   async getUsers(token: string): Promise<User[]> {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     const response = await axios.get(`${API_URL}/auth/all`);
-    console.log(response.data);
     return response.data.map((user: AuthUser) => ({
       id: user.id.toString(),
       name: user.username,
@@ -84,9 +83,7 @@ export const dashboardService: DashboardService = {
     return response.data;
   },
   updateUser: async (id, data) => {
-    console.log(id, data);
-    const response = await axios.put(`${API_URL}/auth/${id}`, data);
-    console.log(response.data);
+    const response = await axios.patch(`${API_URL}/auth/${id}`, data);
     return response.data;
   },
   deleteUser: async (id) => {
